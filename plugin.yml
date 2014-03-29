@@ -1,0 +1,12 @@
+name: Minetrends
+version: 1.2
+website: www.Minetrends.com
+author: NXTGUY & VolcanicPlaza
+
+main: com.volcanicplaza.MineTrends.Minetrends
+database: false
+
+commands:
+  minetrends:
+    descrption: Main command for the MineTrends plugin.
+    aliases: [minet, mtrends]
