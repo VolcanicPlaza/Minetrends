@@ -154,14 +154,14 @@ public class Minetrends extends JavaPlugin {
 		int time = getFrequency();
 		if (time == 0){
 			//Received no data.
-			Bukkit.getLogger().info("***************************************************************");
-			Bukkit.getLogger().info("<Minetrends> Could not connect to the Minetrends servers.");
-			Bukkit.getLogger().info("***************************************************************");
+			Bukkit.getLogger().warning("***************************************************************");
+			Bukkit.getLogger().warning("<Minetrends> Could not connect to the Minetrends servers.");
+			Bukkit.getLogger().warning("***************************************************************");
 		} else if (time == -1){
 			//Invalid key
-			Bukkit.getLogger().info("***************************************************************");
-			Bukkit.getLogger().info("<Minetrends> You have specified an Invalid Server Key!");
-			Bukkit.getLogger().info("***************************************************************");
+			Bukkit.getLogger().warning("***************************************************************");
+			Bukkit.getLogger().warning("<Minetrends> You have specified an Invalid Server Key!");
+			Bukkit.getLogger().warning("***************************************************************");
 		} else {
 			Bukkit.getLogger().info("<Minetrends> Sucessfully authenticated with Minetrends.");
 			Minetrends.runnable = Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new sendRunnable(), 20L, (20 * time));

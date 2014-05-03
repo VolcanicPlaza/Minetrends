@@ -6,9 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 
+import org.bukkit.Bukkit;
 import org.codehaus.jackson.map.ObjectMapper;
 
 public class sendRunnable implements Runnable {
@@ -21,7 +22,7 @@ public class sendRunnable implements Runnable {
 		long startTime = 0;
 		HttpURLConnection conn = null;
 		
-		//System.out.println(Minetrends.getData());
+		System.out.println(Minetrends.getData());
 		
 		 String urlParameters = "key=" + Minetrends.publicKey + "&data=" + Minetrends.getData();
 		  try {
@@ -33,7 +34,6 @@ public class sendRunnable implements Runnable {
 		
 		try {
 			conn = (HttpURLConnection) url.openConnection();
-		try {
 			conn.setRequestMethod("POST"); //use post method
 			conn.setDoOutput(true); //we will send stuff
 			conn.setDoInput(true); //we want feedback
@@ -43,27 +43,21 @@ public class sendRunnable implements Runnable {
 			conn.setAllowUserInteraction(false);
 			conn.setRequestProperty("Content-Length", "" + Integer.toString(urlParameters.getBytes().length));
 			conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-		}
-			catch (ProtocolException e) {
-			e.printStackTrace();
-		}
 		
-		// Open a stream which can write to the URL******************************************
-		DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-		wr.writeBytes(urlParameters);
-		wr.flush();
-		wr.close();
-		
-		startTime = System.currentTimeMillis();
-		// Open a stream which can read the server response*********************************
-		InputStream in = conn.getInputStream();
-		try {
+			// Open a stream which can write to the URL******************************************
+			DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+			wr.writeBytes(urlParameters);
+			wr.flush();
+			wr.close();
+			
+			startTime = System.currentTimeMillis();
+			// Open a stream which can read the server response*********************************
+			InputStream in = conn.getInputStream();
 			BufferedReader rd  = new BufferedReader(new InputStreamReader(in));
 			String responseSingle;
 			while ((responseSingle = rd.readLine()) != null) {
 			String response = null;
 			response = response + responseSingle;
-			//System.out.println(responseSingle);
 			}
 			String response = rd.readLine();
 			
@@ -78,16 +72,15 @@ public class sendRunnable implements Runnable {
 			
 			rd.close(); //close the reader
 			//System.out.println("Response: " + response);
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		} finally { //in this case, we are ensured to close the input stream
-			if (in != null)
-			in.close();
-		}
+			if (in != null) {
+				in.close();
+			}
+		} catch (SocketTimeoutException e) {
+			Bukkit.getLogger().warning("<Minetrends> Unable to send data to Minetrends. Connection timed out.");
 		} catch (IOException e) {
-		} 
-		finally {  //in this case, we are ensured to close the connection itself
+			Bukkit.getLogger().warning("Unkonwn Minetrends Error! Please report!");
+			e.printStackTrace();
+		} finally { //in this case, we are ensured to close the connection itself
 			if (conn != null)
 			conn.disconnect();
 		}
