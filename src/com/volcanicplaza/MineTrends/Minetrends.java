@@ -184,6 +184,9 @@ public class Minetrends extends JavaPlugin {
 			//Player's IP Address
 			player.put("ADDRESS", Encryption.encryptString(plr.getAddress().toString()));
 			
+			//Player UUID. New in Minecraft v1.7
+			player.put("UUID", Encryption.encryptString(plr.getUniqueId().toString()));
+			
 			//Player's XP Level
 			player.put("XPLEVELS", Encryption.encryptString(String.valueOf(plr.getLevel())));
 			
