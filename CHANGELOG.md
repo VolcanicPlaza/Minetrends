@@ -1,6 +1,7 @@
 Changelog
 ==========
 v1.3
+* Now requires Bukkit v1.7.2-R0.3 or newer.
 * Bug Fix: Incorrect free disk space being sent.
 * Added server uptime monitoring support.
 * Added server TPS monitoring support.
