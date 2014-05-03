@@ -53,8 +53,8 @@ public class Minetrends extends JavaPlugin {
 		saveConfig();
 		plugin.reloadConfig();
 		
-		hostname = "http://api.minetrends.com";
-		//hostname = "http://192.168.1.33";
+		//hostname = "http://api.minetrends.com";
+		hostname = "http://192.168.1.33";
 		
 		refreshConfig();
 		
@@ -195,6 +195,8 @@ public class Minetrends extends JavaPlugin {
 		}
 		
 		data.put("players", playersList);
+		
+		data.put("BUKKIT-VERSION", Encryption.encryptString(plugin.getServer().getBukkitVersion().toString()));
 		
 		
 		data.put("TIMEZONE", Encryption.encryptString(TimeZone.getDefault().getDisplayName()));
