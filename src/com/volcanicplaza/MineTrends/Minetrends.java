@@ -6,12 +6,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,11 +54,15 @@ public class Minetrends extends JavaPlugin {
 		plugin.reloadConfig();
 		
 		hostname = "http://api.minetrends.com";
+		//hostname = "http://192.168.1.33";
 		
 		refreshConfig();
 		
 		publicKey = Encryption.getServerKey();
 		privateKey = Encryption.getPrivateKey();
+		
+		//Start TPS monitor.
+		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TPSChecker(), 100L, 1L);
 		
 		Bukkit.getLogger().info(getDescription().getName() + " v" + getDescription().getVersion() + " has been enabled!");
 	}
@@ -196,9 +203,18 @@ public class Minetrends extends JavaPlugin {
 		data.put("memoryTotal", "" + Encryption.encryptString(Runtime.getRuntime().totalMemory() + ""));
 		data.put("memoryMax", Encryption.encryptString(Runtime.getRuntime().maxMemory() + ""));
 		
+		//Java Virtual Machine Uptime
+		long JVMStartTime = ManagementFactory.getRuntimeMXBean().getStartTime();
+		long currentTime = new Date().getTime();
+		long upTime = (currentTime - JVMStartTime) / 1000;
+		data.put("uptime", "" + Encryption.encryptString(upTime + ""));
+		
+		//TPS Monitor
+		data.put("TPS", Encryption.encryptString(new DecimalFormat("#.####").format(TPSChecker.getTPS()) + ""));
+		
 		//Diskspace Usage
 		File hd = new File("/");
-		data.put("diskspaceFree", "" + Encryption.encryptString(hd.getUsableSpace() + ""));
+		data.put("diskspaceFree", "" + Encryption.encryptString(hd.getFreeSpace() + ""));
 		data.put("diskspaceTotal", Encryption.encryptString(hd.getTotalSpace() + ""));
 		
 		//Installed plugin version.
@@ -265,6 +281,12 @@ public class Minetrends extends JavaPlugin {
 						sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
 					}
 					return true;
+				} else if (args[0].equalsIgnoreCase("myip")){
+					if (sender.isOp()){
+						sender.sendMessage(((Player) sender).getAddress().getAddress().getHostAddress());
+					} else {
+						return false;
+					}
 				}
 			} else if (args.length == 2){
 				if (args[0].equalsIgnoreCase("key")){
