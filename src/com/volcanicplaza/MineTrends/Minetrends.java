@@ -154,16 +154,16 @@ public class Minetrends extends JavaPlugin {
 		int time = getFrequency();
 		if (time == 0){
 			//Received no data.
-			Bukkit.getLogger().info("[URGENT] <Minetrends> Could not receive frequency data!");
-			Bukkit.getLogger().info("[URGENT] <Minetrends> Will not send any data to Minetrends.");
+			Bukkit.getLogger().info("***************************************************************");
+			Bukkit.getLogger().info("<Minetrends> Could not connect to the Minetrends servers.");
+			Bukkit.getLogger().info("***************************************************************");
 		} else if (time == -1){
 			//Invalid key
-			Bukkit.getLogger().info("[URGENT] <Minetrends> Could not receive frequency data!");
-			Bukkit.getLogger().info("[URGENT] <Minetrends> You have specified an INVALID SERVER KEY!");
-			Bukkit.getLogger().info("[URGENT] <Minetrends> Will not send any data to Minetrends.");
+			Bukkit.getLogger().info("***************************************************************");
+			Bukkit.getLogger().info("<Minetrends> You have specified an Invalid Server Key!");
+			Bukkit.getLogger().info("***************************************************************");
 		} else {
-			Bukkit.getLogger().info("<Minetrends> Sucessfully received send frequency data.");
-			Bukkit.getLogger().info("<Minetrends> Will send data to Minetrends every " + time + " seconds!");
+			Bukkit.getLogger().info("<Minetrends> Sucessfully authenticated with Minetrends.");
 			Minetrends.runnable = Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new sendRunnable(), 20L, (20 * time));
 		}
 	}
