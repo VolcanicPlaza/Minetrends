@@ -38,7 +38,7 @@ public class sendRunnable implements Runnable {
 			conn.setDoOutput(true); //we will send stuff
 			conn.setDoInput(true); //we want feedback
 			conn.setUseCaches(false); //no caches
-			conn.setConnectTimeout(2000); //set timeout
+			conn.setConnectTimeout(4000); //set timeout
 			conn.setInstanceFollowRedirects(true);
 			conn.setAllowUserInteraction(false);
 			conn.setRequestProperty("Content-Length", "" + Integer.toString(urlParameters.getBytes().length));
