@@ -32,6 +32,8 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.volcanicplaza.MineTrends.Updater.UpdateResult;
+
 public class Minetrends extends JavaPlugin {
 	
 	public static JavaPlugin plugin = null;
@@ -46,6 +48,11 @@ public class Minetrends extends JavaPlugin {
 	public static int time = 0;
 	public static BukkitTask runnable;
 	
+	//Updater Class
+	public static UpdateResult update;
+	public static String name = "";
+	public static String version;
+	
 	@Override
 	public void onEnable(){
 		plugin = this;
@@ -57,6 +64,24 @@ public class Minetrends extends JavaPlugin {
 		hostname = "http://192.168.1.33";
 		
 		refreshConfig();
+		
+		//Check if a new update is available.
+		if (plugin.getConfig().getBoolean("check-updates")){
+			Updater updater = new Updater(plugin, 76929, this.getFile(), Updater.UpdateType.NO_DOWNLOAD, false);
+			update = updater.getResult();
+			if (update == Updater.UpdateResult.UPDATE_AVAILABLE) {
+				name = updater.getLatestName(); // Get the latest version
+				version = updater.getLatestName().substring(updater.getLatestName().lastIndexOf('v') + 1);
+				Bukkit.getLogger().info("***************************************************************");
+				Bukkit.getLogger().info("There is a new Minetrends update available for download! (v" + version + ")");
+				Bukkit.getLogger().info("Type /minetrends update to download the update.");
+				Bukkit.getLogger().info("***************************************************************");
+			} else if (updater.getResult() == Updater.UpdateResult.NO_UPDATE){
+				//Up to date! Yay!
+			}
+		} else {
+			Bukkit.getLogger().info("You have disabled update checking in the Minetrends configuration file!");
+		}
 		
 		publicKey = Encryption.getServerKey();
 		privateKey = Encryption.getPrivateKey();
@@ -256,17 +281,51 @@ public class Minetrends extends JavaPlugin {
 			if (args.length == 0){
 				sender.sendMessage(ChatColor.AQUA + "-=-=-=-=-=- Minetrends -=-=-=-=-=-");
 				sender.sendMessage(ChatColor.AQUA + "/minetrends" + ChatColor.GRAY + " Shows this help page.");
-				sender.sendMessage(ChatColor.AQUA + "/minetrends reload" + ChatColor.GRAY + " Reload the Minetrends configuration file.");
 				sender.sendMessage(ChatColor.AQUA + "/minetrends key <server_key>" + ChatColor.GRAY + " Add your server key.");
+				sender.sendMessage(ChatColor.AQUA + "/minetrends reload" + ChatColor.GRAY + " Reload the Minetrends configuration file.");
+				sender.sendMessage(ChatColor.AQUA + "/minetrends update" + ChatColor.GRAY + " Update the plugin to the lastest version.");
 				sender.sendMessage(ChatColor.AQUA + "-=-=-=-=-=-{ v" + pdfFile.getVersion() + " }-=-=-=-=-=-");
 				return true;
 			} else if (args.length == 1){
 				if (args[0].equalsIgnoreCase("update")){
 					if (sender.isOp()){
-						sender.sendMessage(ChatColor.RED + "This feature has not yet been implemented.");
+						sender.sendMessage(ChatColor.AQUA + "Updating Minetrends...");
+						Updater updater = new Updater(this, 76929, this.getFile(), Updater.UpdateType.NO_VERSION_CHECK, true);
+						Updater.UpdateResult result = updater.getResult();
+				        switch(result) {
+				            case SUCCESS:
+				                // Success: The updater found an update, and has readied it to be loaded the next time the server restarts/reloads
+				            	sender.sendMessage(ChatColor.AQUA + "Awesome! New Minetrends update downloaded!");
+				            	sender.sendMessage(ChatColor.AQUA + "Please reload or restart the server to apply the update.");
+				                break;
+				            case FAIL_DOWNLOAD:
+				                // Download Failed: The updater found an update, but was unable to download it.
+				            	sender.sendMessage(ChatColor.RED + "Uh oh! Failed to download the new update!");
+				            	sender.sendMessage(ChatColor.RED + "Please try again later or contact us if this keeps happening.");
+				                break;
+				            case FAIL_DBO:
+				                // dev.bukkit.org Failed: For some reason, the updater was unable to contact DBO to download the file.
+				            	sender.sendMessage(ChatColor.RED + "Uh oh! Failed to connect to dev.bukkit.org");
+				            	sender.sendMessage(ChatColor.RED + "Please try again later or contact us if this keeps happening.");
+				                break;
+				            case DISABLED:
+				                // Admin has globally disabled updating.
+				            	sender.sendMessage(ChatColor.RED + "Uh oh! Automatic updating has been globally disabled!");
+				            	sender.sendMessage(ChatColor.RED + "To use auto updating, it must be enabled in the global config. (plugins/Updater/config.yml)");
+				                break;
+				            case FAIL_APIKEY:
+				                // The server admin has improperly configured their API key in the configuration file.
+				            	sender.sendMessage(ChatColor.RED + "Uh oh! API key error.");
+				            	sender.sendMessage(ChatColor.RED + "Please ensure your API key is correct. (plugins/Updater/config.yml)");
+				                break;
+						default:
+							sender.sendMessage(ChatColor.RED + "Uh oh! Unknown Error!");
+			            	sender.sendMessage(ChatColor.RED + "Please try again later or contact us if this keeps happening.");
+							break;
+				        }
 						return true;
 					} else {
-						sender.sendMessage(ChatColor.RED + "This feature has not yet been implemented.");
+						sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
 						return true;
 					}
 				} else if (args[0].equalsIgnoreCase("reload")){
