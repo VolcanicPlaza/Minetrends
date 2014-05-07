@@ -1,6 +1,7 @@
 Changelog
 ==========
 v1.3
+* Complied on Java 1.6 instead of Java 1.7.
 * Now requires Bukkit v1.7.2-R0.3 or newer.
 * Bug Fix: Incorrect free disk space being sent.
 * Added server uptime monitoring support.
