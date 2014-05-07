@@ -1,4 +1,4 @@
-package com.volcanicplaza.MineTrends;
+package com.volcanicplaza.Minetrends;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

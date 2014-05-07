@@ -1,4 +1,4 @@
-package com.volcanicplaza.MineTrends;
+package com.volcanicplaza.Minetrends;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -32,7 +32,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.volcanicplaza.MineTrends.Updater.UpdateResult;
+import com.volcanicplaza.Minetrends.Updater.UpdateResult;
 
 public class Minetrends extends JavaPlugin {
 	

@@ -1,4 +1,4 @@
-package com.volcanicplaza.MineTrends;
+package com.volcanicplaza.Minetrends;
 
 public class TPSChecker implements Runnable {
 	 public static int TickCount = 0;
