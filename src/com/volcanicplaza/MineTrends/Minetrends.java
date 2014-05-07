@@ -198,7 +198,6 @@ public class Minetrends extends JavaPlugin {
 		
 		data.put("BUKKIT-VERSION", Encryption.encryptString(plugin.getServer().getBukkitVersion().toString()));
 		
-		
 		data.put("TIMEZONE", Encryption.encryptString(TimeZone.getDefault().getDisplayName()));
 		data.put("TIMEZONEID", Encryption.encryptString(TimeZone.getDefault().getID()));
 		data.put("TIMELOCAL", Encryption.encryptString(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime())));
@@ -216,10 +215,10 @@ public class Minetrends extends JavaPlugin {
 		
 		//TPS Monitor
 		data.put("TPS", Encryption.encryptString(new DecimalFormat("#.####").format(TPSChecker.getTPS()) + ""));
-		
+
 		//Diskspace Usage
 		File hd = new File("/");
-		data.put("diskspaceFree", "" + Encryption.encryptString(hd.getFreeSpace() + ""));
+		data.put("diskspaceFree", Encryption.encryptString(hd.getUsableSpace() + ""));
 		data.put("diskspaceTotal", Encryption.encryptString(hd.getTotalSpace() + ""));
 		
 		//Installed plugin version.
