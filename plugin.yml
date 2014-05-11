@@ -3,7 +3,7 @@ version: 1.3
 website: www.Minetrends.com
 author: NXTGUY & VolcanicPlaza
 
-main: com.volcanicplaza.MineTrends.Minetrends
+main: com.volcanicplaza.Minetrends.Minetrends
 database: false
 
 commands:

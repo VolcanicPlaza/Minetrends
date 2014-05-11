@@ -22,7 +22,7 @@ public class sendRunnable implements Runnable {
 		long startTime = 0;
 		HttpURLConnection conn = null;
 		
-		System.out.println(Minetrends.getData());
+		//System.out.println(Minetrends.getData());
 		
 		 String urlParameters = "key=" + Minetrends.publicKey + "&data=" + Minetrends.getData();
 		  try {
