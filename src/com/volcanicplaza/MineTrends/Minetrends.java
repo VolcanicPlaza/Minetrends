@@ -240,17 +240,10 @@ public class Minetrends extends JavaPlugin {
 		
 		//TPS Monitor
 		data.put("TPS", Encryption.encryptString(new DecimalFormat("#.####").format(TPSChecker.getTPS()) + ""));
-<<<<<<< HEAD
 		
 		//Diskspace Usage
 		File hd = new File("/");
-		data.put("diskspaceFree", "" + Encryption.encryptString(hd.getFreeSpace() + ""));
-=======
-
-		//Diskspace Usage
-		File hd = new File("/");
 		data.put("diskspaceFree", Encryption.encryptString(hd.getUsableSpace() + ""));
->>>>>>> origin/development
 		data.put("diskspaceTotal", Encryption.encryptString(hd.getTotalSpace() + ""));
 		
 		//Installed plugin version.
