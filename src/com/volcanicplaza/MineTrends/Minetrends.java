@@ -203,9 +203,10 @@ public class Minetrends extends JavaPlugin {
 		
 		Map<String,Object> data = new HashMap<String,Object>();
 		Map<String,Object> playersList = new HashMap<String,Object>();
-		Map<String,String> player = new HashMap<String,String>();
 		
 		for (Player plr : playersObj){
+			Map<String,String> player = new HashMap<String,String>();
+			
 			//Player's IP Address
 			player.put("ADDRESS", Encryption.encryptString(plr.getAddress().toString()));
 			
@@ -240,17 +241,10 @@ public class Minetrends extends JavaPlugin {
 		
 		//TPS Monitor
 		data.put("TPS", Encryption.encryptString(new DecimalFormat("#.####").format(TPSChecker.getTPS()) + ""));
-<<<<<<< HEAD
 		
 		//Diskspace Usage
 		File hd = new File("/");
-		data.put("diskspaceFree", "" + Encryption.encryptString(hd.getFreeSpace() + ""));
-=======
-
-		//Diskspace Usage
-		File hd = new File("/");
 		data.put("diskspaceFree", Encryption.encryptString(hd.getUsableSpace() + ""));
->>>>>>> origin/development
 		data.put("diskspaceTotal", Encryption.encryptString(hd.getTotalSpace() + ""));
 		
 		//Installed plugin version.
