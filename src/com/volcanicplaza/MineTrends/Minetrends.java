@@ -203,9 +203,10 @@ public class Minetrends extends JavaPlugin {
 		
 		Map<String,Object> data = new HashMap<String,Object>();
 		Map<String,Object> playersList = new HashMap<String,Object>();
-		Map<String,String> player = new HashMap<String,String>();
 		
 		for (Player plr : playersObj){
+			Map<String,String> player = new HashMap<String,String>();
+			
 			//Player's IP Address
 			player.put("ADDRESS", Encryption.encryptString(plr.getAddress().toString()));
 			
