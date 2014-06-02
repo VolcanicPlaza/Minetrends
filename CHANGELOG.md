@@ -1,5 +1,8 @@
 Changelog
 ==========
+v1.3 - June 1st 2014
+* Fixed incorrect player IP being sent.
+
 v1.3
 * Complied on Java 1.6 instead of Java 1.7.
 * Now requires Bukkit v1.7.2-R0.3 or newer.
