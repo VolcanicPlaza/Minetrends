@@ -22,15 +22,17 @@ public class sendRunnable implements Runnable {
 		long startTime = 0;
 		HttpURLConnection conn = null;
 		
-		//System.out.println(Minetrends.getData());
+		//Debugging
+		System.out.println(Minetrends.getData());
 		
-		 String urlParameters = "key=" + Minetrends.publicKey + "&data=" + Minetrends.getData();
-		  try {
-			  url = new URL(Minetrends.hostname + ":81");
-			  
-		  } catch (Exception ex){
-			  ex.printStackTrace();
-		  }
+		//String urlParameters = "key=" + Minetrends.publicKey + "&data=" + Minetrends.getData();
+		String urlParameters = "APIVersion=" + Minetrends.apiVersion + "&action=submitData&data=" + Minetrends.getData();
+		
+		try {
+		  url = new URL(Minetrends.hostname + ":81");
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
 		
 		try {
 			conn = (HttpURLConnection) url.openConnection();

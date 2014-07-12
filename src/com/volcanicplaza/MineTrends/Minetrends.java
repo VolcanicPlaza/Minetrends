@@ -48,6 +48,9 @@ public class Minetrends extends JavaPlugin {
 	public static int time = 0;
 	public static BukkitTask runnable;
 	
+	//Backend Systems API Version
+	public static double apiVersion = 1;
+	
 	//Updater Class
 	public static UpdateResult update;
 	public static String name = "";
@@ -60,8 +63,8 @@ public class Minetrends extends JavaPlugin {
 		saveConfig();
 		plugin.reloadConfig();
 		
-		hostname = "http://api.minetrends.com";
-		//hostname = "http://192.168.1.33";
+		//hostname = "http://api.minetrends.com";
+		hostname = "http://192.168.1.33";
 		
 		refreshConfig();
 		
@@ -201,6 +204,8 @@ public class Minetrends extends JavaPlugin {
 			playersObj.add(player);
 		}
 		
+		Map<String,Object> servers = new HashMap<String,Object>();
+		
 		Map<String,Object> data = new HashMap<String,Object>();
 		Map<String,Object> playersList = new HashMap<String,Object>();
 		
@@ -256,9 +261,11 @@ public class Minetrends extends JavaPlugin {
 			data.put("secure", true);
 		}
 		
+		servers.put(Minetrends.publicKey, data);
 		
 		try {
-			String result = mapper.writeValueAsString(data);
+			//String result = mapper.writeValueAsString(data);
+			String result = mapper.writeValueAsString(servers);
 			return result;
 		} catch (JsonGenerationException e) {
 			// TODO Auto-generated catch block
