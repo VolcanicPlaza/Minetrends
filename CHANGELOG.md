@@ -1,6 +1,10 @@
 Changelog
 ==========
-v1.3 - June 1st 2014
+v1.4
+* Updated to use new Minetrends API protocol.
+* Cleaner console errors.
+
+v1.3.1 - June 1st 2014
 * Fixed incorrect player IP being sent.
 
 v1.3
