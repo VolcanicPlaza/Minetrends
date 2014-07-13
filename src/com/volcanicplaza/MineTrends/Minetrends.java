@@ -22,6 +22,7 @@ import java.util.TimeZone;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -51,6 +52,9 @@ public class Minetrends extends JavaPlugin {
 	//Backend Systems API Version
 	public static double apiVersion = 1;
 	
+	//Player Join Times
+	public static Map<String, Long> playerJoins = new HashMap<String, Long>();
+	
 	//Updater Class
 	public static UpdateResult update;
 	public static String name = "";
@@ -70,6 +74,7 @@ public class Minetrends extends JavaPlugin {
 		
 		//Check if a new update is available.
 		if (plugin.getConfig().getBoolean("check-updates")){
+			Bukkit.getLogger().info("<Minetrends> Checking for updates...");
 			Updater updater = new Updater(plugin, 76929, this.getFile(), Updater.UpdateType.NO_DOWNLOAD, false);
 			update = updater.getResult();
 			if (update == Updater.UpdateResult.UPDATE_AVAILABLE) {
@@ -99,9 +104,11 @@ public class Minetrends extends JavaPlugin {
 	public void onDisable(){
 		Bukkit.getLogger().info(getDescription().getName() + " v" + getDescription().getVersion() + " has been disabled!");
 		Bukkit.getScheduler().cancelAllTasks();
+		Minetrends.runnable = null;
 	}
 	
 	public static int getFrequency(){
+		Bukkit.getLogger().info("<Minetrends> Authenticating with Minetrends...");
 		URL url = null;
 		HttpURLConnection conn = null;
 		int responseInt = 0;
@@ -173,6 +180,10 @@ public class Minetrends extends JavaPlugin {
 	}
 	
 	public static void refreshConfig(){
+		if (Minetrends.runnable != null) {
+			Minetrends.runnable.cancel();
+		}
+		
 		plugin.reloadConfig();
 		key = plugin.getConfig().getString("key");
 		
@@ -193,6 +204,7 @@ public class Minetrends extends JavaPlugin {
 		} else {
 			Bukkit.getLogger().info("<Minetrends> Sucessfully authenticated with Minetrends.");
 			Minetrends.runnable = Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new sendRunnable(), 20L, (20 * time));
+			
 		}
 	}
 	
@@ -243,6 +255,13 @@ public class Minetrends extends JavaPlugin {
 		long currentTime = new Date().getTime();
 		long upTime = (currentTime - JVMStartTime) / 1000;
 		data.put("uptime", "" + Encryption.encryptString(upTime + ""));
+		
+		//Total Number of Entities
+		int totalEntities = 0;
+		for (World world : Bukkit.getWorlds()) {
+			totalEntities = totalEntities + world.getEntities().size();
+		}
+		data.put("totalEntities", Encryption.encryptString(totalEntities + ""));
 		
 		//TPS Monitor
 		data.put("TPS", Encryption.encryptString(new DecimalFormat("#.####").format(TPSChecker.getTPS()) + ""));
