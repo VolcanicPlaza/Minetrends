@@ -94,6 +94,13 @@ public class Minetrends extends JavaPlugin {
 		publicKey = Encryption.getServerKey();
 		privateKey = Encryption.getPrivateKey();
 		
+		//If any players are currently online, add them to the playerJoins HashMap.
+		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			if (!(Minetrends.playerJoins.containsKey(player.getName()))){
+				Minetrends.playerJoins.put(player.getName(), System.currentTimeMillis());
+			}
+		}
+		
 		//Start TPS monitor.
 		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TPSChecker(), 100L, 1L);
 		
@@ -232,6 +239,10 @@ public class Minetrends extends JavaPlugin {
 			
 			//Player's XP Level
 			player.put("XPLEVELS", Encryption.encryptString(String.valueOf(plr.getLevel())));
+			
+			//How long the player has been playing this login session.
+			long plrSessionTime = System.currentTimeMillis() - Minetrends.playerJoins.get(plr.getName());
+			player.put("sessionTime", Encryption.encryptString((plrSessionTime / 1000) + ""));
 			
 			//Add to the main data array
 			playersList.put(Encryption.encryptString(plr.getName()), player);
