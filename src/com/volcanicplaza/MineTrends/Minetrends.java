@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -248,6 +250,9 @@ public class Minetrends extends JavaPlugin {
 			plrSessionTime = System.currentTimeMillis() - Minetrends.playerJoins.get(plr.getName());
 			player.put("sessionTime", Encryption.encryptString((plrSessionTime / 1000) + ""));
 			
+			//Player's Minecraft Language
+			player.put("appLanguage", Encryption.encryptString(getLanguage(plr)));
+			
 			//Add to the main data array
 			playersList.put(Encryption.encryptString(plr.getName()), player);
 		}
@@ -312,6 +317,31 @@ public class Minetrends extends JavaPlugin {
 			e.printStackTrace();
 		}
 		
+		return null;
+	}
+	
+	public static String getLanguage(Player p){
+		Object ep;
+		Field f;
+		String language = null;
+		try {
+			ep = getMethod("getHandle", p.getClass()).invoke(p, (Object[]) null);
+			f = ep.getClass().getDeclaredField("locale");
+			f.setAccessible(true);
+			language = (String) f.get(ep);
+		} catch (Exception e) {
+			//Error when trying to retrieve language.
+			language = "N/A";
+		}
+		return language;
+	}
+	
+	private static Method getMethod(String name, Class<?> clazz) {
+		for (Method m : clazz.getDeclaredMethods()) {
+			if (m.getName().equals(name)) {
+				return m;
+			}
+		}
 		return null;
 	}
 
