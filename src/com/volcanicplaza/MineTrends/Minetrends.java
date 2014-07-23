@@ -104,6 +104,9 @@ public class Minetrends extends JavaPlugin {
 		//Start TPS monitor.
 		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TPSChecker(), 100L, 1L);
 		
+		//Register Event Listeners
+		Bukkit.getServer().getPluginManager().registerEvents(new PlayerEvents(), this);
+		
 		Bukkit.getLogger().info(getDescription().getName() + " v" + getDescription().getVersion() + " has been enabled!");
 	}
 	
@@ -241,7 +244,8 @@ public class Minetrends extends JavaPlugin {
 			player.put("XPLEVELS", Encryption.encryptString(String.valueOf(plr.getLevel())));
 			
 			//How long the player has been playing this login session.
-			long plrSessionTime = System.currentTimeMillis() - Minetrends.playerJoins.get(plr.getName());
+			long plrSessionTime = 0;
+			plrSessionTime = System.currentTimeMillis() - Minetrends.playerJoins.get(plr.getName());
 			player.put("sessionTime", Encryption.encryptString((plrSessionTime / 1000) + ""));
 			
 			//Add to the main data array
