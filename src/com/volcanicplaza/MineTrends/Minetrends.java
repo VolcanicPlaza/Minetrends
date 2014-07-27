@@ -69,8 +69,8 @@ public class Minetrends extends JavaPlugin {
 		saveConfig();
 		plugin.reloadConfig();
 		
-		//hostname = "http://api.minetrends.com";
-		hostname = "http://192.168.1.33";
+		hostname = "http://api.minetrends.com";
+		//hostname = "http://192.168.1.33";
 		
 		refreshConfig();
 		

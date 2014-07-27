@@ -26,7 +26,7 @@ public class sendRunnable implements Runnable {
 		String urlParameters = "APIVersion=" + Minetrends.apiVersion + "&action=submitData&data=" + Minetrends.getData();
 		
 		//Debugging
-		System.out.println(urlParameters);
+		//System.out.println(urlParameters);
 		
 		try {
 		  url = new URL(Minetrends.hostname + ":81");
