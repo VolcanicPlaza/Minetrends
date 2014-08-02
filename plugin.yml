@@ -1,6 +1,6 @@
 name: Minetrends
-version: 1.3.1
-website: www.Minetrends.com
+version: 1.4
+website: Minetrends.com
 author: NXTGUY & VolcanicPlaza
 
 main: com.volcanicplaza.Minetrends.Minetrends
@@ -8,5 +8,5 @@ database: false
 
 commands:
   minetrends:
-    descrption: Main command for the MineTrends plugin.
+    descrption: Main command for the Minetrends plugin.
     aliases: [minet, mtrends]

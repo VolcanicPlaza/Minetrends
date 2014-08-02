@@ -1,6 +1,11 @@
 Changelog
 ==========
-v1.3 - June 1st 2014
+v1.4
+* Updated to use new Minetrends API protocol.
+* Cleaner console errors.
+* Sends totalEntities, player language, player session time.
+
+v1.3.1 - June 1st 2014
 * Fixed incorrect player IP being sent.
 
 v1.3

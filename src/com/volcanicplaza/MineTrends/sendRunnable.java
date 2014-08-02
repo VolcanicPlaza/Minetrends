@@ -22,15 +22,17 @@ public class sendRunnable implements Runnable {
 		long startTime = 0;
 		HttpURLConnection conn = null;
 		
-		//System.out.println(Minetrends.getData());
+		//String urlParameters = "key=" + Minetrends.publicKey + "&data=" + Minetrends.getData();
+		String urlParameters = "APIVersion=" + Minetrends.apiVersion + "&action=submitData&data=" + Minetrends.getData();
 		
-		 String urlParameters = "key=" + Minetrends.publicKey + "&data=" + Minetrends.getData();
-		  try {
-			  url = new URL(Minetrends.hostname + ":81");
-			  
-		  } catch (Exception ex){
-			  ex.printStackTrace();
-		  }
+		//Debugging
+		//System.out.println(urlParameters);
+		
+		try {
+		  url = new URL(Minetrends.hostname + ":81");
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
 		
 		try {
 			conn = (HttpURLConnection) url.openConnection();
@@ -78,9 +80,8 @@ public class sendRunnable implements Runnable {
 		} catch (SocketTimeoutException e) {
 			Bukkit.getLogger().warning("<Minetrends> Unable to send data to Minetrends. Connection timed out.");
 		} catch (IOException e) {
-			Bukkit.getLogger().warning("Unkonwn Minetrends Error! Please report!");
-			e.printStackTrace();
-		} finally { //in this case, we are ensured to close the connection itself
+			Bukkit.getLogger().warning("<Minetrends> Unable to send data to Minetrends.");
+		} finally {
 			if (conn != null)
 			conn.disconnect();
 		}

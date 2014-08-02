@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -22,6 +24,7 @@ import java.util.TimeZone;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -48,6 +51,12 @@ public class Minetrends extends JavaPlugin {
 	public static int time = 0;
 	public static BukkitTask runnable;
 	
+	//Backend Systems API Version
+	public static double apiVersion = 1;
+	
+	//Player Join Times
+	public static Map<String, Long> playerJoins = new HashMap<String, Long>();
+	
 	//Updater Class
 	public static UpdateResult update;
 	public static String name = "";
@@ -67,6 +76,7 @@ public class Minetrends extends JavaPlugin {
 		
 		//Check if a new update is available.
 		if (plugin.getConfig().getBoolean("check-updates")){
+			Bukkit.getLogger().info("<Minetrends> Checking for updates...");
 			Updater updater = new Updater(plugin, 76929, this.getFile(), Updater.UpdateType.NO_DOWNLOAD, false);
 			update = updater.getResult();
 			if (update == Updater.UpdateResult.UPDATE_AVAILABLE) {
@@ -86,8 +96,18 @@ public class Minetrends extends JavaPlugin {
 		publicKey = Encryption.getServerKey();
 		privateKey = Encryption.getPrivateKey();
 		
+		//If any players are currently online, add them to the playerJoins HashMap.
+		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			if (!(Minetrends.playerJoins.containsKey(player.getName()))){
+				Minetrends.playerJoins.put(player.getName(), System.currentTimeMillis());
+			}
+		}
+		
 		//Start TPS monitor.
 		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new TPSChecker(), 100L, 1L);
+		
+		//Register Event Listeners
+		Bukkit.getServer().getPluginManager().registerEvents(new PlayerEvents(), this);
 		
 		Bukkit.getLogger().info(getDescription().getName() + " v" + getDescription().getVersion() + " has been enabled!");
 	}
@@ -96,9 +116,11 @@ public class Minetrends extends JavaPlugin {
 	public void onDisable(){
 		Bukkit.getLogger().info(getDescription().getName() + " v" + getDescription().getVersion() + " has been disabled!");
 		Bukkit.getScheduler().cancelAllTasks();
+		Minetrends.runnable = null;
 	}
 	
 	public static int getFrequency(){
+		Bukkit.getLogger().info("<Minetrends> Authenticating with Minetrends...");
 		URL url = null;
 		HttpURLConnection conn = null;
 		int responseInt = 0;
@@ -170,6 +192,10 @@ public class Minetrends extends JavaPlugin {
 	}
 	
 	public static void refreshConfig(){
+		if (Minetrends.runnable != null) {
+			Minetrends.runnable.cancel();
+		}
+		
 		plugin.reloadConfig();
 		key = plugin.getConfig().getString("key");
 		
@@ -190,6 +216,7 @@ public class Minetrends extends JavaPlugin {
 		} else {
 			Bukkit.getLogger().info("<Minetrends> Sucessfully authenticated with Minetrends.");
 			Minetrends.runnable = Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new sendRunnable(), 20L, (20 * time));
+			
 		}
 	}
 	
@@ -200,6 +227,8 @@ public class Minetrends extends JavaPlugin {
 		for (Player player : plugin.getServer().getOnlinePlayers()) {
 			playersObj.add(player);
 		}
+		
+		Map<String,Object> servers = new HashMap<String,Object>();
 		
 		Map<String,Object> data = new HashMap<String,Object>();
 		Map<String,Object> playersList = new HashMap<String,Object>();
@@ -215,6 +244,14 @@ public class Minetrends extends JavaPlugin {
 			
 			//Player's XP Level
 			player.put("XPLEVELS", Encryption.encryptString(String.valueOf(plr.getLevel())));
+			
+			//How long the player has been playing this login session.
+			long plrSessionTime = 0;
+			plrSessionTime = System.currentTimeMillis() - Minetrends.playerJoins.get(plr.getName());
+			player.put("sessionTime", Encryption.encryptString((plrSessionTime / 1000) + ""));
+			
+			//Player's Minecraft Language
+			player.put("appLanguage", Encryption.encryptString(getLanguage(plr)));
 			
 			//Add to the main data array
 			playersList.put(Encryption.encryptString(plr.getName()), player);
@@ -239,6 +276,13 @@ public class Minetrends extends JavaPlugin {
 		long upTime = (currentTime - JVMStartTime) / 1000;
 		data.put("uptime", "" + Encryption.encryptString(upTime + ""));
 		
+		//Total Number of Entities
+		int totalEntities = 0;
+		for (World world : Bukkit.getWorlds()) {
+			totalEntities = totalEntities + world.getEntities().size();
+		}
+		data.put("totalEntities", Encryption.encryptString(totalEntities + ""));
+		
 		//TPS Monitor
 		data.put("TPS", Encryption.encryptString(new DecimalFormat("#.####").format(TPSChecker.getTPS()) + ""));
 		
@@ -256,9 +300,11 @@ public class Minetrends extends JavaPlugin {
 			data.put("secure", true);
 		}
 		
+		servers.put(Minetrends.publicKey, data);
 		
 		try {
-			String result = mapper.writeValueAsString(data);
+			//String result = mapper.writeValueAsString(data);
+			String result = mapper.writeValueAsString(servers);
 			return result;
 		} catch (JsonGenerationException e) {
 			// TODO Auto-generated catch block
@@ -271,6 +317,31 @@ public class Minetrends extends JavaPlugin {
 			e.printStackTrace();
 		}
 		
+		return null;
+	}
+	
+	public static String getLanguage(Player p){
+		Object ep;
+		Field f;
+		String language = null;
+		try {
+			ep = getMethod("getHandle", p.getClass()).invoke(p, (Object[]) null);
+			f = ep.getClass().getDeclaredField("locale");
+			f.setAccessible(true);
+			language = (String) f.get(ep);
+		} catch (Exception e) {
+			//Error when trying to retrieve language.
+			language = "N/A";
+		}
+		return language;
+	}
+	
+	private static Method getMethod(String name, Class<?> clazz) {
+		for (Method m : clazz.getDeclaredMethods()) {
+			if (m.getName().equals(name)) {
+				return m;
+			}
+		}
 		return null;
 	}
 
