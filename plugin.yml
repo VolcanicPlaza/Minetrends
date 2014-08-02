@@ -9,4 +9,4 @@ database: false
 commands:
   minetrends:
     descrption: Main command for the Minetrends plugin.
-    aliases: [minet, mtrends]
+    aliases: [minet, mtrends, mt]
