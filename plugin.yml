@@ -1,6 +1,6 @@
 name: Minetrends
-version: 1.4
-website: Minetrends.com
+version: ${project.version}
+website: ${project.url}
 author: NXTGUY & VolcanicPlaza
 
 main: com.volcanicplaza.Minetrends.Minetrends

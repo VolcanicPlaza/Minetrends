@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.volcanicplaza</groupId>
-    <artifactId>minetrends</artifactId>
+    <artifactId>Minetrends</artifactId>
 
     <packaging>jar</packaging>
 
-    <name>MineTrends</name>
-    <version>1.5-SNAPSHOT</version>
+    <name>Minetrends</name>
+    <version>1.4</version>
 
-    <url>http://dev.bukkit.org/bukkit-plugins/minetrends/</url>
+    <url>http://minetrends.com</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -27,8 +27,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.7.9-R0.2</version>
-            <type>jar</type>
+            <version>1.7.2-R0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -41,6 +40,11 @@
             <artifactId>jackson-mapper-lgpl</artifactId>
             <version>1.9.13</version>
         </dependency>
+		<dependency>
+			<groupId>com.sun.xml.security</groupId>
+			<artifactId>xml-security-impl</artifactId>
+			<version>1.0</version>
+		</dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -61,6 +65,7 @@
                 <includes>
                     <include>plugin.yml</include>
                     <include>config.yml</include>
+                    <include>CHANGELOG.md</include>
                 </includes>
             </resource>
         </resources>
