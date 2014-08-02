@@ -1,5 +1,9 @@
 Changelog
 ==========
+v1.4.1
+* Minor code cleanups.
+* Now building with Maven.
+
 v1.4
 * Updated to use new Minetrends API protocol.
 * Cleaner console errors.
