@@ -115,7 +115,6 @@ public class Minetrends extends JavaPlugin {
 	@Override
 	public void onDisable(){
 		Bukkit.getLogger().info(getDescription().getName() + " v" + getDescription().getVersion() + " has been disabled!");
-		Bukkit.getScheduler().cancelAllTasks();
 		Minetrends.runnable = null;
 	}
 	
